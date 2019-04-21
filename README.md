@@ -1,9 +1,9 @@
-# Chu de
-Vi?t m?t chuong tr�nh v? crawler/scrapy v?i b?t k� ng�n ng? n�o m� b?n d� bi?t, v� d?m b?o c�c y�u c?u sau:
-# Y�u c?u
-1. B?n t? ch?n m?t du?ng d?n c?a b?t k� c?a m?t trang web tin t?c (VNExpress, TuoiTre, TheSaiGonTime,...)
-2. C�c b?n ph?i download du?c n?i dung (crawl) v� ph�n t�ch (parse) b�i vi?t d? l?y du?c: ti�u d?, t�c gi?, ng�y xu?t b?n.
-3. T? n?i dung b�i vi?t d� c�c b?n ph?i t�m ki?m xem n� c�n c� c�c du?ng d?n d?n b�i vi?t n�o n?a hay kh�ng, v?i m?i du?ng d?n t�m du?c, ti?p t?c th?c hi?n bu?c 1, v� 2.
+# Chủ đề
+Viết một chương trình về crawler/scrapy với bất kì ngôn ngữ nào mà bạn đã biết, và đảm bảo các yêu cầu sau:
+# Yêu cầu
+1. Bạn tự chọn một đường dẫn của bất kì của một trang web tin tức (VNExpress, TuoiTre, TheSaiGonTime,...)
+2. Các bạn phải download được nội dung (crawl) và phân tích (parse) bài viết để lấy được: tiêu đề, tác giả, ngày xuất bản.
+3. Từ nội dung bài viết đó các bạn phải tìm kiếm xem nó còn có các đường dẫn đến bài viết nào nữa hay không, với mỗi đường dẫn tìm được, tiếp tục thực hiện bước 1, và 2.
 
 # Run project
 go run crawl.go <link_crawler>
