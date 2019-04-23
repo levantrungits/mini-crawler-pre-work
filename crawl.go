@@ -11,14 +11,13 @@
 package main
 
 import (
+	"github.com/PuerkitoBio/goquery"
 	"net/url"		// to fix our URLs
-	"crypto/tls"	// to get access to some low-level transport customizations
-	//"github.com/jackdanger/collectlinks" // return to you a slice of all the href links found.
+	"github.com/jackdanger/collectlinks" // return a slice of all the href links found.
 	"net/http" 		// using to retrieve a page
-	"io/ioutil" 	// to maek reading and printing the html page
 	"fmt"
-	"flag" 			// 'flag' helps you parse command line arguments
-	"os" 			// 'os' gives you access to system calls
+	"flag" 			// 'flag' helps parse command line arguments
+	"os" 			// 'os' gives access to system calls
 )
 
 // Let’s not fetch any page more than once.
@@ -44,58 +43,56 @@ func main()  {
 		queue <- args[0]
 	}()
 	// an effective iterator keyword
-	for uri := range queue {
-		// pass each URL we find off to be read & enqueued
-		enqueue(uri, queue)
+	for url := range queue {
+		// pass each URL find off to be read & enqueued
+		enqueue(url, queue)
+		return //temp
 	}
 }
 
-func enqueue(uri string, queue chan string) {
-	fmt.Println("fetching", uri)
-	visited[uri] = true // Record that we're going to visit this page
-
-	// ~ new(thing(a: b))
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: true,
-	}
-	transport := &http.Transport{
-		TLSClientConfig: tlsConfig,
-	}
-	// also provides a way to override defaults (like 'http.Get')
-	client := http.Client{Transport: transport}
-
-	resp, err := client.Get(uri)
+func enqueue(url string, queue chan string) {
+	fmt.Println("fetching", url)
+	visited[url] = true // Record that we're going to visit this page
+	resp, err := http.Get(url)
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
 
-	//links := collectlinks.All(resp.Body)
+	links := collectlinks.All(resp.Body)
 
-	// SHOW REQUIMENT by NORDIC-CODER
-	body, _ := ioutil.ReadAll(resp.Body)
-	getLitteContentPage(string(body))
+	// Create a goquery document from the HTTP response
+	document, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	// for _, link := range(links) {
-	// 	// Don't enqueue the raw thing we find
-	// 	// set invalid URLs to blank strings
-	// 	absolute := fixUrl(link, uri)
+	// Find the review items
+	document.Find("div").Each(func (index  int, element *goquery.Selection) {
+		// For each item found, get the band and title
+		// See if the href attribute exists on the element
+		docTitle := element.Find(".m_Title").First().Text()
+		docAuthor := element.Find(".m_ReferenceSourceTG").First().Text()
+		docCreateDate := element.Find(".m_DateCreated").First().Text()
+		fmt.Printf("Review %s: %s, %s, %s\n", url, docTitle, docAuthor, docCreateDate)
+	  })
 
-	// 	// so let's never send those to the channel
-	// 	if uri != "" {
-	// 		// Don't enqueue a page twice!
-	// 		if !visited[absolute] {
-	// 			// We asynchronously enqueue what we've found
-	// 			go func() {
-	// 				queue <- link
-	// 			}()
-	// 		}
-	// 	}
-	// }
-}
+	for _, link := range(links) {
+		// Don't enqueue the raw thing we find
+		// set invalid URLs to blank strings
+		absolute := fixUrl(link, url)
 
-func getLitteContentPage(bodyStr string) {
-	fmt.Println(bodyStr)
+		// so let's never send those to the channel
+		if url != "" {
+			// Don't enqueue a page twice!
+			if !visited[absolute] {
+				// We asynchronously enqueue what we've found
+				go func() {
+					queue <- link
+				}()
+			}
+		}
+	}
 }
 
 func fixUrl(href, base string) (string) {
@@ -114,26 +111,4 @@ func fixUrl(href, base string) (string) {
 	uri = baseUrl.ResolveReference(uri)
 	// return a plain string.
 	return uri.String()
-}
-
-func retrieve(uri string) {
-	// ex: https://6brand.com/
-	resp, err := http.Get(uri)
-	if err != nil {
-		return
-	}
-	// need to close the resource we opened
-	// `defer` delays an operation until the function ends.
-	defer resp.Body.Close()
-
-	// resp.Body isn't a string, it's more like a reference
-	// to a stream of data. So we use the 'ioutil'
-	// package to read it into memory.
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("read error is: ", err)
-
-	// cast the html body to a string because
-	// Go hands it to us as a byte array
-	fmt.Println(string(body))
-
 }
