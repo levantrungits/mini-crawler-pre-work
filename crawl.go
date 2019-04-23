@@ -59,6 +59,7 @@ func enqueue(url string, queue chan string) {
 	}
 	defer resp.Body.Close()
 
+	// Get All Links Exist In Body URL
 	links := collectlinks.All(resp.Body)
 
 	// Create a goquery document from the HTTP response
