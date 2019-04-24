@@ -68,15 +68,32 @@ func enqueue(url string, queue chan string) {
 		fmt.Println(err)
 	}
 
+	var docTitle, docAuthor, docCreateDate = "", "", ""
 	// Find the review items
-	document.Find("div").Each(func (index  int, element *goquery.Selection) {
+	document.Find("span").Each(func (index  int, element *goquery.Selection) {
 		// For each item found, get the band and title
 		// See if the href attribute exists on the element
-		docTitle := element.Find(".m_Title").First().Text()
-		docAuthor := element.Find(".m_ReferenceSourceTG").First().Text()
-		docCreateDate := element.Find(".m_DateCreated").First().Text()
-		fmt.Printf("Review %s: %s, %s, %s\n", url, docTitle, docAuthor, docCreateDate)
-	  })
+		value1 := element.Find(".m_Title").First().Text()
+		if value1 != "" {
+			docTitle = value1
+			fmt.Println("value1: " + value1);
+		}
+	})
+	document.Find("span").Each(func (index  int, element *goquery.Selection) {
+		value2 := element.Find(".m_ReferenceSourceTG").First().Text()
+		if value2 != "" {
+			docAuthor = value2
+			fmt.Println("value2: " + value2);
+		}
+	})
+	document.Find("span").Each(func (index  int, element *goquery.Selection) {
+		value3 := element.Find(".m_DateCreated").First().Text()
+		if value3 != "" {
+			docCreateDate = value3
+			fmt.Println("value3: " + value3);
+		}
+	})
+	fmt.Printf("Review %s: %s, %s, %s\n", url, docTitle, docAuthor, docCreateDate)
 
 	for _, link := range(links) {
 		// Don't enqueue the raw thing we find
