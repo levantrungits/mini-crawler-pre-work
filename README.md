@@ -6,8 +6,9 @@ Viết một chương trình về crawler/scrapy với bất kì ngôn ngữ nà
 3. Từ nội dung bài viết đó các bạn phải tìm kiếm xem nó còn có các đường dẫn đến bài viết nào nữa hay không, với mỗi đường dẫn tìm được, tiếp tục thực hiện bước 1, và 2.
 
 # Run project
-go run crawl.go <link_crawler>
-
+go run main.go <link_crawler>
+ex: go run main.go https://www.thesaigontimes.vn/121624/Cuoc-cach-mang-dau-khi-da-phien
 # Link Refer
 https://github.com/jackdanger/collectlinks
+https://godoc.org/github.com/PuerkitoBio/goquery
 https://www.reddit.com/r/golang/comments/3fcabt/question_read_value_from_html_input_tag/
