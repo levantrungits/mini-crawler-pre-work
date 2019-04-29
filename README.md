@@ -7,8 +7,13 @@ Viết một chương trình về crawler/scrapy với bất kì ngôn ngữ nà
 
 # Run project
 go run main.go <link_crawler>
+
 ex: go run main.go https://www.thesaigontimes.vn/121624/Cuoc-cach-mang-dau-khi-da-phien
+
 # Link Refer
 https://github.com/jackdanger/collectlinks
+
 https://godoc.org/github.com/PuerkitoBio/goquery
+
 https://www.reddit.com/r/golang/comments/3fcabt/question_read_value_from_html_input_tag/
+
